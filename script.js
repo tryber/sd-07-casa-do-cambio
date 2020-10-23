@@ -61,7 +61,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
 }
 
 const handleRates = (rates) => {
-  const ratesEntries = Object.entries(rates);
+  const ratesEntries = Object.entries(rates).sort();
 
   // ratesEntries.forEach(renderRate);
   ratesEntries.forEach((entry) => renderRate(entry));
