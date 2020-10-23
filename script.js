@@ -30,8 +30,13 @@ const fetchCurrency = (currency) => {
   fetch(endpoint)
     .then((response) => response.json())
     .then((object) => {
-      handleRates(object.rates);
-    });
+      if (object.error) {
+        throw new Error(object.error)
+      } else {
+        handleRates(object.rates);
+      }
+    })
+    .catch((error) => showAlert(error));
 }
 
 const handleRates = (rates) => {
