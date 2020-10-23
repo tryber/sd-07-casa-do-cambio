@@ -28,7 +28,7 @@ const fetchCurrency = (currency) => {
     .then((response) => response.json())
     .then((object) => {
       handleRates(object.rates);
-    })
+    });
 }
 
 const handleRates = (rates) => {
