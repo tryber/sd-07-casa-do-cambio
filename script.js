@@ -9,11 +9,14 @@ const setupEventHandlers = () => {
 
 const handleSearchEvent = () => {
   const currency = document.querySelector('#currency-input').value;
+  const currencyUpperCased = currency.toUpperCase();
+
+  cleanList();
   
   if (currency === '') {
     showAlert('A moeda deve ser informada');
   } else {
-    fetchCurrency(currency);
+    fetchCurrency(currencyUpperCased);
   }
 }
 
@@ -32,5 +35,22 @@ const fetchCurrency = (currency) => {
 }
 
 const handleRates = (rates) => {
-  console.log(rates);
+  const ratesEntries = Object.entries(rates);
+
+  // ratesEntries.forEach(renderRate);
+  ratesEntries.forEach((entry) => renderRate(entry));
 }
+
+const renderRate = ([ currency, value ]) => {
+  const ul = document.querySelector('#currency-list');
+  const li = document.createElement("li");
+  li.innerHTML = `${currency}: ${value}`
+  ul.appendChild(li)
+}
+
+const cleanList = () => {
+  const ul = document.querySelector('#currency-list');
+  ul.innerHTML = '';
+}
+
+
