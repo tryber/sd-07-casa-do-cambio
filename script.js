@@ -16,7 +16,8 @@ const handleSearchEvent = () => {
   if (currency === '') {
     showAlert('A moeda deve ser informada');
   } else {
-    fetchCurrency(currencyUpperCased);
+    // fetchCurrency(currencyUpperCased);
+    fetchCurrencyAwaitAsync(currencyUpperCased);
   }
 }
 
@@ -37,6 +38,23 @@ const fetchCurrency = (currency) => {
       }
     })
     .catch((error) => showAlert(error));
+}
+
+const fetchCurrencyAwaitAsync = async (currency) => {
+  const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+
+  try {
+    const response = await fetch(endpoint);
+    const object = await response.json();
+
+    if (object.error) {
+      throw new Error(object.error)
+    } else {
+      handleRates(object.rates);
+    }
+  } catch (error) {
+    showAlert(error);
+  }
 }
 
 const handleRates = (rates) => {
