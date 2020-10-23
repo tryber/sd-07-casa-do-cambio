@@ -25,20 +25,20 @@ const showAlert = (message) => {
   window.alert(message);
 }
 
-const fetchCurrency = (currency) => {
-  const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+// const fetchCurrency = (currency) => {
+//   const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
 
-  fetch(endpoint)
-    .then((response) => response.json())
-    .then((object) => {
-      if (object.error) {
-        throw new Error(object.error)
-      } else {
-        handleRates(object.rates);
-      }
-    })
-    .catch((error) => showAlert(error));
-}
+//   fetch(endpoint)
+//     .then((response) => response.json())
+//     .then((object) => {
+//       if (object.error) {
+//         throw new Error(object.error)
+//       } else {
+//         handleRates(object.rates);
+//       }
+//     })
+//     .catch((error) => showAlert(error));
+// }
 
 const fetchCurrencyAwaitAsync = async (currency) => {
   const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
@@ -48,7 +48,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
     const object = await response.json();
 
     if (object.error) {
-      throw new Error(object.error)
+      throw new Error(object.error);
     } else {
       handleRates(object.rates);
     }
