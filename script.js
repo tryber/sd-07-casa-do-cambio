@@ -58,7 +58,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
 }
 
 const handleRates = (rates) => {
-  const ratesEntries = Object.entries(rates);
+  const ratesEntries = Object.entries(rates).sort();
 
   // ratesEntries.forEach(renderRate);
   ratesEntries.forEach((entry) => renderRate(entry));
@@ -76,4 +76,12 @@ const cleanList = () => {
   ul.innerHTML = '';
 }
 
+const btClear = document.querySelector('#clear-button')
+btClear.addEventListener('click', function() {
+  const ul = document.querySelector('#currency-list');  
+  const currency = document.querySelector('#currency-input');
+  console.log(currency);
+  ul.innerHTML = '';
+  currency.value = '';  
+})
 
