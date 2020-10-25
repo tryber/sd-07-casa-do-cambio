@@ -1,79 +1,88 @@
 window.onload = () => {
   setupEventHandlers();
-}
+};
 
 const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
+  const cleanButton = document.querySelector('#clean-button');
   searchButton.addEventListener('click', handleSearchEvent);
-}
+  cleanButton.addEventListener('click', cleanList);
+};
 
 const handleSearchEvent = () => {
-  const currency = document.querySelector('#currency-input').value;
-  const currencyUpperCased = currency.toUpperCase();
+  let currency = document.querySelector('#currency-input').value;
+  currency = currency.toUpperCase();
 
   cleanList();
-  
-  if (currency === '') {
-    showAlert('A moeda deve ser informada');
+
+  currency === '' ? showAlert('A moeda deve ser informada') : getEndPoint(currency);
+};
+
+const getEndPoint = (currency) => {
+  let endpoint;
+  if (currency === 'BTC') {
+    endpoint = 'https://api.coindesk.com/v1/bpi/currentprice.json';
   } else {
-    // fetchCurrency(currencyUpperCased);
-    fetchCurrencyAwaitAsync(currencyUpperCased);
+    endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
   }
-}
+  fetchCurrencyAwaitAsync(endpoint);
+};
 
-const showAlert = (message) => {
-  window.alert(message);
-}
+const showAlert = (message) => window.alert(message);
 
-// const fetchCurrency = (currency) => {
-//   const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
-
-//   fetch(endpoint)
-//     .then((response) => response.json())
-//     .then((object) => {
-//       if (object.error) {
-//         throw new Error(object.error)
-//       } else {
-//         handleRates(object.rates);
-//       }
-//     })
-//     .catch((error) => showAlert(error));
-// }
-
-const fetchCurrencyAwaitAsync = async (currency) => {
-  const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
-
+const fetchCurrencyAwaitAsync = async (endpoint) => {
   try {
     const response = await fetch(endpoint);
     const object = await response.json();
+    if (object.error) throw new Error(object.error);
 
-    if (object.error) {
-      throw new Error(object.error);
-    } else {
-      handleRates(object.rates);
-    }
+    if (!object.rates) handleRatesBTC(object.bpi);
+
+    if (object.rates) handleRates(object.rates);
   } catch (error) {
     showAlert(error);
   }
-}
+};
+
+const handleRatesBTC = ({ EUR, GBP, USD }) => {
+  let ratesValuesEUR = Object.values(EUR);
+  let ratesValuesGBP = Object.values(GBP);
+  let ratesValuesUSD = Object.values(USD);
+
+  ratesValuesEUR = [
+    ratesValuesEUR[0],
+    ratesValuesEUR[4],
+  ];
+
+  ratesValuesGBP = [
+    ratesValuesGBP[0],
+    ratesValuesGBP[4],
+  ];
+
+  ratesValuesUSD = [
+    ratesValuesUSD[0],
+    ratesValuesUSD[4],
+  ];
+
+  const ratesEntries = [ratesValuesEUR, ratesValuesGBP, ratesValuesUSD];
+  ratesEntries.sort();
+  ratesEntries.forEach(renderRate);
+};
 
 const handleRates = (rates) => {
   const ratesEntries = Object.entries(rates);
-
-  // ratesEntries.forEach(renderRate);
-  ratesEntries.forEach((entry) => renderRate(entry));
-}
+  ratesEntries.sort();
+  ratesEntries.forEach(renderRate);
+};
 
 const renderRate = ([ currency, value ]) => {
   const ul = document.querySelector('#currency-list');
-  const li = document.createElement("li");
-  li.innerHTML = `${currency}: ${value}`
-  ul.appendChild(li)
-}
+  const li = document.createElement('li');
+  li.innerHTML = `${currency}: ${value}`;
+  ul.appendChild(li);
+};
 
 const cleanList = () => {
   const ul = document.querySelector('#currency-list');
   ul.innerHTML = '';
-}
-
-
+};
