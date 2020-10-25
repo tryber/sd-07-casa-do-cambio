@@ -25,6 +25,7 @@ body {
   flex-flow: column nowrap;
   margin-top: 2rem;
 }
+
 section {
   max-width: 450px;
   width: 100%;
@@ -35,9 +36,11 @@ h1 {
   color: var(--primary);
   font-size: 64px;
 }
+
 label {
   color: var(--font-secondary);
 }
+
 input[type="text"] {
   padding: 0.5rem;
   font-size: 16px;
@@ -49,6 +52,12 @@ input[type="text"] {
   max-width: 450px;
   width: 100%;
 }
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
 button {
   margin: 1rem 0;
   outline: none;
@@ -67,6 +76,7 @@ button {
   border: none;
   transition: all 0.2s ease-in-out;
 }
+
 button:focus,
 button:hover {
   outline: none;
@@ -86,6 +96,7 @@ ul li {
   padding: 0.5rem 1rem;
   color: var(--primary);
 }
+
 ul li b {
   background-color: transparent;
   color: var(--font-primary);
@@ -99,17 +110,32 @@ ul li:nth-child(odd) {
 ::-webkit-scrollbar {
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-button {
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-track {
   background-color: var(--secondary);
 }
+
 ::-webkit-scrollbar-track-piece {
   background-color: var(--font-primary);
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb {
   background-color: var(--primary);
   border-radius: 10px;
 }
+
+@media screen and (max-width: 400px) {
+  h1 {
+    font-size: 50px;
+    margin-bottom: 30px;
+  }
+
+  section {
+    width: 80vw;
+  }
+} 
