@@ -5,6 +5,8 @@ window.onload = () => {
 const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
   searchButton.addEventListener('click', handleSearchEvent);
+  const clearButton = document.querySelector('#clear-button');
+  clearButton.addEventListener('click', cleanList);
 }
 
 const handleSearchEvent = () => {
@@ -41,7 +43,12 @@ const showAlert = (message) => {
 // }
 
 const fetchCurrencyAwaitAsync = async (currency) => {
-  const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+  let endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+  let isBTC = false;
+  if (currency === 'BTC') {
+    endpoint = `https://api.coindesk.com/v1/bpi/currentprice.json`;
+    isBTC = true;
+  }
 
   try {
     const response = await fetch(endpoint);
@@ -50,19 +57,30 @@ const fetchCurrencyAwaitAsync = async (currency) => {
     if (object.error) {
       throw new Error(object.error);
     } else {
-      handleRates(object.rates);
+      isBTC? handleBtcRates(object.bpi) : handleRates(object.rates, currency);
     }
   } catch (error) {
     showAlert(error);
   }
 }
 
-const handleRates = (rates) => {
+const handleRates = (rates, currency) => {
+  
+  delete rates[currency];
   const ratesEntries = Object.entries(rates);
-
-  // ratesEntries.forEach(renderRate);
-  ratesEntries.forEach((entry) => renderRate(entry));
+  ratesEntries
+    .sort()
+    .forEach(renderRate);
+    
 }
+
+const handleBtcRates = (rates) => {
+    const btcEntries = Object.entries(rates);
+    btcEntries
+      .sort()
+      .map(([currency, ojbCurrency ]) => renderRate([currency, ojbCurrency.rate]));
+
+} 
 
 const renderRate = ([ currency, value ]) => {
   const ul = document.querySelector('#currency-list');
