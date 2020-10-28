@@ -16,6 +16,11 @@
   overflow: hidden;
 }
 
+.buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
 body {
   height: 100vh;
   width: 100vw;
@@ -48,6 +53,7 @@ input[type="text"] {
   color: var(--font-primary);
   max-width: 450px;
   width: 100%;
+  margin-top: 10px;
 }
 button {
   margin: 1rem 0;
@@ -66,6 +72,7 @@ button {
   border-radius: 5px;
   border: none;
   transition: all 0.2s ease-in-out;
+  width: 200px;
 }
 button:focus,
 button:hover {

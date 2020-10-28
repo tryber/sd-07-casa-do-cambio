@@ -5,6 +5,9 @@ window.onload = () => {
 const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
   searchButton.addEventListener('click', handleSearchEvent);
+
+  const searchClearButton = document.querySelector('#clear-button');
+  searchClearButton.addEventListener('click', cleanList);
 }
 
 const handleSearchEvent = () => {
@@ -16,7 +19,6 @@ const handleSearchEvent = () => {
   if (currency === '') {
     showAlert('A moeda deve ser informada');
   } else {
-    // fetchCurrency(currencyUpperCased);
     fetchCurrencyAwaitAsync(currencyUpperCased);
   }
 }
@@ -25,23 +27,15 @@ const showAlert = (message) => {
   window.alert(message);
 }
 
-// const fetchCurrency = (currency) => {
-//   const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
-
-//   fetch(endpoint)
-//     .then((response) => response.json())
-//     .then((object) => {
-//       if (object.error) {
-//         throw new Error(object.error)
-//       } else {
-//         handleRates(object.rates);
-//       }
-//     })
-//     .catch((error) => showAlert(error));
-// }
 
 const fetchCurrencyAwaitAsync = async (currency) => {
-  const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+  let endpoint;
+
+  if (currency === 'BTC') {
+    endpoint = `https://api.coindesk.com/v1/bpi/currentprice.json`;
+  } else {
+    endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
+  }
 
   try {
     const response = await fetch(endpoint);
@@ -50,7 +44,17 @@ const fetchCurrencyAwaitAsync = async (currency) => {
     if (object.error) {
       throw new Error(object.error);
     } else {
-      handleRates(object.rates);
+      if (currency === 'BTC'){
+        const objectBpi = object.bpi;
+        const objectBTCKeys = Object.keys(objectBpi);
+        const objectBTC = {};
+        objectBTCKeys.forEach((key) => {
+          objectBTC[objectBpi[key].code] = objectBpi[key].rate;
+        });
+        handleRates(objectBTC);
+      } else {
+        handleRates(object.rates);
+      }
     }
   } catch (error) {
     showAlert(error);
@@ -59,8 +63,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
 
 const handleRates = (rates) => {
   const ratesEntries = Object.entries(rates);
-
-  // ratesEntries.forEach(renderRate);
+  ratesEntries.sort();
   ratesEntries.forEach((entry) => renderRate(entry));
 }
 
