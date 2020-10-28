@@ -5,6 +5,46 @@ window.onload = () => {
 const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
   searchButton.addEventListener('click', handleSearchEvent);
+  const clearButton = document.getElementById('clear-button')
+  clearButton.addEventListener('click', handleClearEvent);
+
+  const sortButton = document.getElementById('sort-list')
+  sortButton.addEventListener('click', handleSortEvent);
+}
+
+const handleSortEvent = () => {
+  const currencyList = document.querySelector('#currency-list')
+  const currencyListSpread = [...currencyList.childNodes]
+  const currencyListHandled = currencyListSpread.map(item => item.innerText.split(':'))
+
+  const currencyEntries = currencyListHandled.sort()
+  currencyList.innerHTML = ''
+
+  currencyEntries.forEach(entry => renderRate(entry))
+}
+
+const handleClearEvent = () => {
+  const currencyList = document.getElementById('currency-list')
+  currencyList.innerHTML = ''
+}
+
+const handleBtcEvent = async (currency) => {
+  const endpoint = 'https://api.coindesk.com/v1/bpi/currentprice.json'
+
+  try {
+    const data = await fetch(endpoint)
+    const object = await data.json()
+    const btcEntries = await Object.entries(object.bpi).map((element) => [element[0], element[1].rate])
+    
+    if (btcEntries.error) {
+      throw new Error(btcEntries.error)
+    } else {
+      btcEntries.forEach(entry => renderRate(entry))
+    }
+  } catch (error) {
+    showAlert(error)
+  }
+
 }
 
 const handleSearchEvent = () => {
@@ -15,6 +55,8 @@ const handleSearchEvent = () => {
   
   if (currency === '') {
     showAlert('A moeda deve ser informada');
+  } else if (currency === 'BTC') {
+    handleBtcEvent(currency)
   } else {
     // fetchCurrency(currencyUpperCased);
     fetchCurrencyAwaitAsync(currencyUpperCased);
@@ -68,6 +110,7 @@ const renderRate = ([ currency, value ]) => {
   const ul = document.querySelector('#currency-list');
   const li = document.createElement("li");
   li.innerHTML = `${currency}: ${value}`
+  li.className = 'currency-item'
   ul.appendChild(li)
 }
 
