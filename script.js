@@ -43,9 +43,13 @@ const showAlert = (message) => {
 //     .catch((error) => showAlert(error));
 // }
 
-const orderCurrency = (currencyObj) => {
+const orderCurrency = (currencyObj, currency) => {
   const orderedCurrency = {};
-  Object.keys(currencyObj).sort().forEach(key => orderedCurrency[key] = currencyObj[key]);
+  Object.keys(currencyObj).sort().forEach(key => {
+    if (key !== currency) {
+      orderedCurrency[key] = currencyObj[key];
+    }
+  });
   return orderedCurrency;
 }
 
@@ -59,7 +63,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
     if (object.error) {
       throw new Error(object.error);
     } else {
-      handleRates(orderCurrency(object.rates));
+      handleRates(orderCurrency(object.rates, currency));
     }
   } catch (error) {
     showAlert(error);
