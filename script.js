@@ -6,6 +6,9 @@ const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
   searchButton.addEventListener('click', handleSearchEvent);
 
+  const bitcoinButton = document.querySelector('#bitcoin-button');
+  bitcoinButton.addEventListener('click', fetchBitcoin);
+
   const clearButton = document.querySelector('#clear-button');
   clearButton.addEventListener('click', cleanList)
 }
@@ -23,6 +26,7 @@ const handleSearchEvent = () => {
     fetchCurrencyAwaitAsync(currencyUpperCased);
   }
 }
+
 
 const showAlert = (message) => {
   window.alert(message);
@@ -70,11 +74,33 @@ const fetchCurrencyAwaitAsync = async (currency) => {
   }
 }
 
+const fetchBitcoin = async () => {
+  const endpoint = 'https://api.coindesk.com/v1/bpi/currentprice.json';
+
+  try {
+    const response = await fetch(endpoint);
+    const object = await response.json();
+
+    if (object.error) {
+    throw new Error(object.error);
+    } else {
+      cleanList();
+      handleBitcoins(object.bpi);
+    }
+  } catch (error) {
+    showAlert(error)
+  }
+}
+
 const handleRates = (rates) => {
   const ratesEntries = Object.entries(rates);
 
   // ratesEntries.forEach(renderRate);
   ratesEntries.forEach((entry) => renderRate(entry));
+}
+
+const handleBitcoins = (bicoinsRates) => {
+  Object.entries(bicoinsRates).forEach(entry => renderRate([ entry[1].code, entry[1].rate ]));
 }
 
 const renderRate = ([ currency, value ]) => {
