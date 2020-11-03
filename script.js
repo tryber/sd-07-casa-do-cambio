@@ -5,6 +5,9 @@ window.onload = () => {
 const setupEventHandlers = () => {
   const searchButton = document.querySelector('#search-button');
   searchButton.addEventListener('click', handleSearchEvent);
+
+  const clearButton = document.querySelector('#clear-button');
+  clearButton.addEventListener('click', cleanList)
 }
 
 const handleSearchEvent = () => {
