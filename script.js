@@ -43,6 +43,12 @@ const showAlert = (message) => {
 //     .catch((error) => showAlert(error));
 // }
 
+const orderCurrency = (currencyObj) => {
+  const orderedCurrency = {};
+  Object.keys(currencyObj).sort().forEach(key => orderedCurrency[key] = currencyObj[key]);
+  return orderedCurrency;
+}
+
 const fetchCurrencyAwaitAsync = async (currency) => {
   const endpoint = `https://api.ratesapi.io/api/latest?base=${currency}`;
 
@@ -53,7 +59,7 @@ const fetchCurrencyAwaitAsync = async (currency) => {
     if (object.error) {
       throw new Error(object.error);
     } else {
-      handleRates(object.rates);
+      handleRates(orderCurrency(object.rates));
     }
   } catch (error) {
     showAlert(error);
